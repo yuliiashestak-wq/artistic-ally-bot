@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Coins, Heart, LockKeyhole, Play, Sparkles } from "lucide-react";
+import { Coins, Heart, LockKeyhole, Play, CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAppState } from "@/lib/app-state";
 import neonForest from "@/assets/poster-neon-forest.jpg";
 import skyPirates from "@/assets/poster-sky-pirates.jpg";
 import moonCity from "@/assets/poster-moon-city.jpg";
@@ -39,15 +40,16 @@ const NEW_RELEASES: Series[] = [
   { id: "isles-above", title: "Isles Above", creator: "Nova Frames", genre: "Adventure", episode: "NEW · EP 04", description: "A fearless young captain races across floating kingdoms to recover a stolen storm crystal.", image: skyPirates, access: "locked" },
 ];
 
-function MediaCard({ series, favorite, onFavorite, onOpen }: { series: Series; favorite: boolean; onFavorite: () => void; onOpen: () => void }) {
+function MediaCard({ series, favorite, onFavorite, onOpen, unlocked }: { series: Series; favorite: boolean; onFavorite: () => void; onOpen: () => void; unlocked: boolean }) {
+  const showUnlock = series.access === "locked" && unlocked;
   return (
     <article className="group min-w-0">
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-card shadow-lg transition duration-300 group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-[var(--shadow-glow)]">
         <button type="button" onClick={onOpen} className="absolute inset-0 z-10 cursor-pointer" aria-label={`Open ${series.title}`} />
         <img src={series.image} alt={`${series.title} poster`} width={768} height={1152} loading="lazy" className="size-full object-cover transition duration-500 group-hover:scale-105" />
         <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background to-transparent" />
-        <span className={`absolute top-2 left-2 z-20 rounded px-2 py-1 text-[10px] font-extrabold tracking-wide ${series.access === "free" ? "bg-primary text-primary-foreground" : "bg-background/90 text-foreground"}`}>
-          {series.access === "free" ? "FREE" : "🔒 5 COIN UNLOCK"}
+        <span className={`absolute top-2 left-2 z-20 rounded px-2 py-1 text-[10px] font-extrabold tracking-wide ${showUnlock ? "bg-primary text-primary-foreground" : series.access === "free" ? "bg-primary text-primary-foreground" : "bg-background/90 text-foreground"}`}>
+          {showUnlock ? "UNLOCKED" : series.access === "free" ? "FREE" : "5 COIN UNLOCK"}
         </span>
         <Button type="button" variant="violet" size="icon" aria-label={favorite ? `Remove ${series.title} from favorites` : `Add ${series.title} to favorites`} title={favorite ? "Remove from favorites" : "Add to favorites"} onClick={(event) => { event.stopPropagation(); onFavorite(); }} className="absolute top-2 right-2 z-20 size-9 rounded-full bg-background/80">
           <Heart className={favorite ? "fill-primary text-primary" : "text-foreground"} />
@@ -64,7 +66,7 @@ function MediaCard({ series, favorite, onFavorite, onOpen }: { series: Series; f
   );
 }
 
-function MediaRow({ title, eyebrow, items, favorites, onFavorite, onOpen }: { title: string; eyebrow: string; items: Series[]; favorites: Set<string>; onFavorite: (id: string) => void; onOpen: (series: Series) => void }) {
+function MediaRow({ title, eyebrow, items, favorites, onFavorite, onOpen, unlockedMap }: { title: string; eyebrow: string; items: Series[]; favorites: Set<string>; onFavorite: (id: string) => void; onOpen: (series: Series) => void; unlockedMap: Set<string> }) {
   return (
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
@@ -72,15 +74,32 @@ function MediaRow({ title, eyebrow, items, favorites, onFavorite, onOpen }: { ti
         <span className="hidden text-xs text-muted-foreground sm:block">Fresh episodes every week</span>
       </div>
       <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-5">
-        {items.map((series) => <MediaCard key={series.id} series={series} favorite={favorites.has(series.id)} onFavorite={() => onFavorite(series.id)} onOpen={() => onOpen(series)} />)}
+        {items.map((series) => <MediaCard key={series.id} series={series} favorite={favorites.has(series.id)} onFavorite={() => onFavorite(series.id)} onOpen={() => onOpen(series)} unlocked={unlockedMap.has(series.id)} />)}
       </div>
     </section>
   );
 }
 
-export function MediaLibrary() {
+export function MediaLibrary({ onOpenStore }: { onOpenStore: () => void }) {
+  const { account, deductCoins, unlockEpisode, isEpisodeUnlocked } = useAppState();
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
   const [selected, setSelected] = useState<Series | null>(null);
+  const [unlockedMap, setUnlockedMap] = useState<Set<string>>(new Set());
+  const [unlocking, setUnlocking] = useState(false);
+
+  const loadUnlocks = useCallback(async () => {
+    const allSeries = [...TRENDING, ...NEW_RELEASES];
+    const results = await Promise.all(
+      allSeries
+        .filter((s) => s.access === "locked")
+        .map(async (s) => ({ id: s.id, unlocked: await isEpisodeUnlocked(s.id) })),
+    );
+    setUnlockedMap(new Set(results.filter((r) => r.unlocked).map((r) => r.id)));
+  }, [isEpisodeUnlocked]);
+
+  useEffect(() => {
+    if (account) void loadUnlocks();
+  }, [account, loadUnlocks]);
 
   function toggleFavorite(id: string) {
     setFavorites((current) => {
@@ -90,11 +109,45 @@ export function MediaLibrary() {
     });
   }
 
+  async function handleUnlock(series: Series) {
+    if (!account) {
+      toast.error("Please sign in to unlock episodes.");
+      return;
+    }
+    if (account.tokens < 5) {
+      toast.error(`Not enough coins. You need 5 coins but have ${account.tokens}.`);
+      onOpenStore();
+      return;
+    }
+    setUnlocking(true);
+    try {
+      const newBalance = await deductCoins(5);
+      if (newBalance === null) {
+        toast.error("Insufficient coin balance or transaction failed.");
+        onOpenStore();
+        return;
+      }
+      const success = await unlockEpisode(series.id);
+      if (!success) {
+        toast.error("Coins were deducted but the unlock record failed. Please contact support.");
+        return;
+      }
+      setUnlockedMap((prev) => new Set(prev).add(series.id));
+      toast.success(`Episode unlocked! 5 coins deducted. New balance: ${newBalance} coins.`);
+    } catch {
+      toast.error("Something went wrong during unlock. Please try again.");
+    } finally {
+      setUnlocking(false);
+    }
+  }
+
+  const isUnlocked = selected ? unlockedMap.has(selected.id) : false;
+
   return (
     <>
       <div className="space-y-14">
-        <MediaRow title="Trending Anime & Toons" eyebrow="Most watched now" items={TRENDING} favorites={favorites} onFavorite={toggleFavorite} onOpen={setSelected} />
-        <MediaRow title="New Releases" eyebrow="Just dropped" items={NEW_RELEASES} favorites={favorites} onFavorite={toggleFavorite} onOpen={setSelected} />
+        <MediaRow title="Trending Anime & Toons" eyebrow="Most watched now" items={TRENDING} favorites={favorites} onFavorite={toggleFavorite} onOpen={setSelected} unlockedMap={unlockedMap} />
+        <MediaRow title="New Releases" eyebrow="Just dropped" items={NEW_RELEASES} favorites={favorites} onFavorite={toggleFavorite} onOpen={setSelected} unlockedMap={unlockedMap} />
       </div>
       <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open) setSelected(null); }}>
         {selected && (
@@ -109,9 +162,20 @@ export function MediaLibrary() {
                 </DialogHeader>
                 <p className="mt-5 text-sm text-foreground">Created by <strong>{selected.creator}</strong></p>
                 <div className="mt-auto grid gap-3 pt-8">
-                  <Button variant="magic" size="lg" onClick={() => toast.success(selected.access === "free" ? "Episode ready to play" : "Episode unlock will use 5 coins once the wallet is enabled.")}>
-                    {selected.access === "free" ? <Play /> : <LockKeyhole />}{selected.access === "free" ? "Watch Free Episode" : "Unlock for 5 Coins"}
-                  </Button>
+                  {selected.access === "free" || isUnlocked ? (
+                    <Button variant="magic" size="lg" onClick={() => toast.success("Episode ready to play!")}>
+                      <Play /> Watch Episode
+                    </Button>
+                  ) : (
+                    <Button variant="magic" size="lg" disabled={unlocking} onClick={() => handleUnlock(selected)}>
+                      {unlocking ? <><Loader2 className="animate-spin" /> Unlocking...</> : <><LockKeyhole /> Unlock for 5 Coins</>}
+                    </Button>
+                  )}
+                  {isUnlocked && (
+                    <p className="flex items-center justify-center gap-1.5 text-sm text-primary">
+                      <CheckCircle2 className="size-4" /> Episode unlocked — enjoy!
+                    </p>
+                  )}
                   <Button variant="violet" size="lg" onClick={() => toast.success(`Donation support for ${selected.creator} is ready for the coin wallet.`)}>
                     <Coins /> Donate Coins to Creator
                   </Button>

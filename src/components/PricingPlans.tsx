@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { Coins } from "lucide-react";
 
 export const PLANS = [
-  { id: "7d", name: "7 Days", price: "$4", tokens: "250 tokens", note: "A weekend of wonder" },
-  { id: "14d", name: "14 Days", price: "$7", tokens: "600 tokens", note: "Two weeks of stories" },
-  { id: "1m", name: "1 Month", price: "$12", tokens: "1,500 tokens", note: "Most loved", featured: true },
-  { id: "1y", name: "1 Year", price: "$89", tokens: "25,000 tokens", note: "Best value" },
+  { id: "starter", name: "Starter", price: "$5 / €5", coins: "100 Coins", note: "Begin your journey" },
+  { id: "explorer", name: "Explorer", price: "$15 / €15", coins: "350 Coins", note: "Most popular", featured: true },
+  { id: "creator", name: "Creator", price: "$25 / €25", coins: "700 Coins", note: "For active creators" },
+  { id: "legend", name: "Legend", price: "$50 / €50", coins: "1,500 Coins", note: "Best value" },
 ];
 
 export function PricingPlans({ onChoose }: { onChoose?: (planId: string) => void }) {
@@ -24,10 +25,13 @@ export function PricingPlans({ onChoose }: { onChoose?: (planId: string) => void
           )}
           <p className="font-heading text-lg text-foreground">{plan.name}</p>
           <p className="mt-1 font-display text-3xl font-bold text-primary">{plan.price}</p>
-          <p className="mt-1 text-sm text-foreground/90">{plan.tokens}</p>
+          <div className="mt-1 flex items-center gap-1.5">
+            <Coins className="size-4 text-primary" />
+            <p className="text-sm text-foreground/90">{plan.coins}</p>
+          </div>
           <p className="mt-0.5 text-xs text-muted-foreground">{plan.note}</p>
           <Button variant={plan.featured ? "magic" : "violet"} className="mt-4 w-full" onClick={() => onChoose?.(plan.id)}>
-            Choose plan
+            Get Coins
           </Button>
         </div>
       ))}

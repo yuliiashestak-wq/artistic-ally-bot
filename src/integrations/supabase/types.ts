@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           avatar_id: string
           avatar_image: string | null
+          coin_earnings: number
           created_at: string
           id: string
           tokens: number
@@ -26,6 +27,7 @@ export type Database = {
         Insert: {
           avatar_id?: string
           avatar_image?: string | null
+          coin_earnings?: number
           created_at?: string
           id: string
           tokens?: number
@@ -34,6 +36,7 @@ export type Database = {
         Update: {
           avatar_id?: string
           avatar_image?: string | null
+          coin_earnings?: number
           created_at?: string
           id?: string
           tokens?: number
@@ -68,12 +71,131 @@ export type Database = {
         }
         Relationships: []
       }
+      series: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string
+          genre: string
+          cover_image: string | null
+          status: "published" | "draft"
+          episode_count: number
+          coin_price: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          title: string
+          description?: string
+          genre?: string
+          cover_image?: string | null
+          status?: "published" | "draft"
+          episode_count?: number
+          coin_price?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string
+          genre?: string
+          cover_image?: string | null
+          status?: "published" | "draft"
+          episode_count?: number
+          coin_price?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      episode_unlocks: {
+        Row: {
+          id: string
+          user_id: string
+          series_key: string
+          episode_number: number
+          unlocked_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          series_key: string
+          episode_number?: number
+          unlocked_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          series_key?: string
+          episode_number?: number
+          unlocked_at?: string
+        }
+        Relationships: []
+      }
+      follows: {
+        Row: {
+          id: string
+          follower_id: string
+          following_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          follower_id?: string
+          following_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          follower_id?: string
+          following_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      series_likes: {
+        Row: {
+          id: string
+          user_id: string
+          series_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          series_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          series_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      deduct_coins: {
+        Args: { amount: number }
+        Returns: number | null
+      }
+      add_coins: {
+        Args: { amount: number }
+        Returns: number | null
+      }
+      handle_new_user: {
+        Args: Record<string, never>
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
@@ -111,8 +233,8 @@ export type Tables<
         DefaultSchema["Views"])
     ? (DefaultSchema["Tables"] &
         DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
+      Row: infer R
+    }
       ? R
       : never
     : never
