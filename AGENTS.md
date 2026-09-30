@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep third-party API credentials out of persistent browser storage; UI-only settings may use masked, session-scoped state until a secure server connector exists, preventing credential leakage.

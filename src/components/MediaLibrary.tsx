@@ -33,10 +33,10 @@ const TRENDING: Series[] = [
 ];
 
 const NEW_RELEASES: Series[] = [
-  { ...TRENDING[2], id: "moon-city-new", title: "Lunar Promise", episode: "NEW · EP 01", access: "free" },
-  { ...TRENDING[0], id: "ember-map", title: "Ember & the Star Map", episode: "NEW · EP 02", access: "locked" },
-  { ...TRENDING[3], id: "robot-rush", title: "Robot Rush", episode: "NEW · EP 01", access: "free" },
-  { ...TRENDING[1], id: "isles-above", title: "Isles Above", episode: "NEW · EP 04", access: "locked" },
+  { id: "moon-city-new", title: "Lunar Promise", creator: "Silver Ink", genre: "Romance", episode: "NEW · EP 01", description: "A moon princess and her guardian wolf uncover a secret hidden beneath a radiant city.", image: moonCity, access: "free" },
+  { id: "ember-map", title: "Ember & the Star Map", creator: "Mira Vale", genre: "Fantasy", episode: "NEW · EP 02", description: "Ember follows a golden compass into a forest where every wish leaves a glowing trail.", image: neonForest, access: "locked" },
+  { id: "robot-rush", title: "Robot Rush", creator: "Pixel Bloom", genre: "Family", episode: "NEW · EP 01", description: "Three inventors and one optimistic robot race to restart the heart of a mechanical jungle.", image: clockwork, access: "free" },
+  { id: "isles-above", title: "Isles Above", creator: "Nova Frames", genre: "Adventure", episode: "NEW · EP 04", description: "A fearless young captain races across floating kingdoms to recover a stolen storm crystal.", image: skyPirates, access: "locked" },
 ];
 
 function MediaCard({ series, favorite, onFavorite, onOpen }: { series: Series; favorite: boolean; onFavorite: () => void; onOpen: () => void }) {
