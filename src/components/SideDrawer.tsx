@@ -69,7 +69,7 @@ export function SideDrawer({
           <Tabs defaultValue="profile" className="mt-4">
             <TabsList className="grid w-full grid-cols-2 bg-background/50">
               <TabsTrigger value="profile"><UserRound className="mr-1.5 size-4" />Profile</TabsTrigger>
-              <TabsTrigger value="api"><Settings2 className="mr-1.5 size-4" />API Settings</TabsTrigger>
+              <TabsTrigger value="api"><Settings2 className="mr-1.5 size-4" />Platform API</TabsTrigger>
             </TabsList>
             <TabsContent value="profile" className="magic-card mt-3 p-4">
               {account ? (
@@ -94,6 +94,7 @@ export function SideDrawer({
               )}
             </TabsContent>
             <TabsContent value="api" className="mt-4 space-y-4">
+              <div><h3 className="font-heading text-base font-bold text-foreground">Platform API Settings</h3><p className="mt-1 text-xs text-muted-foreground">Connect your preferred story and video services.</p></div>
               <div><label htmlFor="gemini-key" className="text-xs font-bold text-foreground">Google Gemini API Key</label><div className="relative mt-1.5"><KeyRound className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" /><Input id="gemini-key" type="password" autoComplete="off" value={apiSettings.geminiKey} onChange={(event) => setApiSettings((current) => ({ ...current, geminiKey: event.target.value }))} placeholder="Enter Gemini key" className="h-10 bg-background/50 pl-9" /></div></div>
               <div><label htmlFor="video-endpoint" className="text-xs font-bold text-foreground">Video Generation API Endpoint</label><Input id="video-endpoint" type="url" value={apiSettings.videoEndpoint} onChange={(event) => setApiSettings((current) => ({ ...current, videoEndpoint: event.target.value }))} placeholder="https://api.example.com/generate" className="mt-1.5 h-10 bg-background/50" /></div>
               <div><label htmlFor="video-key" className="text-xs font-bold text-foreground">Video Generation API Key</label><div className="relative mt-1.5"><KeyRound className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" /><Input id="video-key" type="password" autoComplete="off" value={apiSettings.videoKey} onChange={(event) => setApiSettings((current) => ({ ...current, videoKey: event.target.value }))} placeholder="Enter video API key" className="h-10 bg-background/50 pl-9" /></div></div>

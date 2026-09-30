@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { AppStateProvider, useAppState } from "@/lib/app-state";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -58,7 +59,7 @@ function Studio() {
           <p className="font-heading text-xs font-extrabold tracking-widest text-primary uppercase">Watch. Imagine. Create.</p>
           <div className="mt-3 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div><h1 className="font-display text-4xl font-bold text-foreground sm:text-6xl">ToonStory AI</h1><p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">Original anime and toons from a new generation of storytellers.</p></div>
-            <button type="button" onClick={() => studioRef.current?.scrollIntoView({ behavior: "smooth" })} className="flex w-fit cursor-pointer items-center gap-2 border-b border-primary pb-1 font-heading text-sm font-bold text-primary"><Sparkles className="size-4" />Create your own series</button>
+            <Button type="button" variant="ghost" onClick={() => studioRef.current?.scrollIntoView({ behavior: "smooth" })} className="w-fit border-b border-primary px-0 font-heading text-sm font-bold text-primary"><Sparkles className="size-4" />Create your own series</Button>
           </div>
         </section>
         <MediaLibrary />
