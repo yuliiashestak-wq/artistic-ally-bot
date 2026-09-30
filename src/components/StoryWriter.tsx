@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { finishStory, suggestStory } from "@/lib/story.functions";
 import { useAppState } from "@/lib/app-state";
-import { Loader2, Sparkles, Wand2 } from "lucide-react";
+import { Clapperboard, Loader2, Sparkles, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 
 export function StoryWriter({ onGenerate }: { onGenerate: () => void }) {
@@ -107,7 +107,7 @@ export function StoryWriter({ onGenerate }: { onGenerate: () => void }) {
           disabled={draft.trim().length < 10}
           onClick={onGenerate}
         >
-          <Sparkles /> Magify My Story
+          <Clapperboard /> Generate Next Episode
         </Button>
       </div>
     </div>
