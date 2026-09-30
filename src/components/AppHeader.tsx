@@ -30,7 +30,7 @@ export function AppHeader({
         </button>
 
         <span className="font-display text-lg font-bold tracking-wide text-foreground sm:text-xl">
-          ToonStory <span className="text-primary">AI</span>
+          Tonera
         </span>
 
         {account ? (

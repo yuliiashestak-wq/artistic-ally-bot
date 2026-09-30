@@ -6,7 +6,7 @@ export function SplashScreen() {
 
   useEffect(() => {
     const a = setTimeout(() => setLeaving(true), 3000);
-    const b = setTimeout(() => setGone(true), 3700);
+    const b = setTimeout(() => setGone(true), 4200);
     return () => {
       clearTimeout(a);
       clearTimeout(b);
@@ -25,11 +25,14 @@ export function SplashScreen() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,color-mix(in_oklab,var(--glow)_35%,transparent),transparent_60%)]" />
       <div className="relative px-6 text-center">
         <p className="font-display glow-text text-3xl leading-tight font-bold text-foreground sm:text-5xl md:text-6xl">
+          Tonera
+        </p>
+        <p className="mt-4 font-display text-xl leading-snug font-semibold text-foreground/90 sm:text-2xl md:text-3xl">
           Welcome to the World
           <br />
           of Wonders
         </p>
-        <p className="mt-6 font-heading text-sm tracking-[0.35em] text-primary uppercase">ToonStory AI</p>
+        <p className="mt-6 font-heading text-sm tracking-[0.35em] text-primary uppercase">Tonera</p>
       </div>
     </div>
   );
