@@ -77,10 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ToonStory AI" },
+      { title: "Tonera" },
       { name: "description", content: "Create AI cartoons and animated stories for the whole family." },
-      { name: "author", content: "ToonStory AI" },
-      { property: "og:title", content: "ToonStory AI" },
+      { name: "author", content: "Tonera" },
+      { property: "og:title", content: "Tonera" },
       { property: "og:description", content: "Create AI cartoons and animated stories for the whole family." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -19,9 +19,9 @@ export const Route = createFileRoute("/")({
   component: Page,
   head: () => ({
     meta: [
-      { title: "ToonStory AI — Watch and Create Animated Stories" },
-      { name: "description", content: "Discover original anime and toons, then turn your own story into an animated series with ToonStory AI." },
-      { property: "og:title", content: "ToonStory AI — Watch and Create Animated Stories" },
+      { title: "Tonera — Watch and Create Animated Stories" },
+      { name: "description", content: "Discover original anime and toons, then turn your own story into an animated series with Tonera." },
+      { property: "og:title", content: "Tonera — Watch and Create Animated Stories" },
       { property: "og:description", content: "A colorful home for original anime, toons, and creator-made animated stories." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -58,7 +58,7 @@ function Studio() {
         <section className="mb-12 border-b border-border pb-9">
           <p className="font-heading text-xs font-extrabold tracking-widest text-primary uppercase">Watch. Imagine. Create.</p>
           <div className="mt-3 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div><h1 className="font-display text-4xl font-bold text-foreground sm:text-6xl">ToonStory AI</h1><p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">Original anime and toons from a new generation of storytellers.</p></div>
+            <div><h1 className="font-display text-4xl font-bold text-foreground sm:text-6xl">Tonera</h1><p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">Original anime and toons from a new generation of storytellers.</p></div>
             <Button type="button" variant="ghost" onClick={() => studioRef.current?.scrollIntoView({ behavior: "smooth" })} className="w-fit border-b border-primary px-0 font-heading text-sm font-bold text-primary"><Sparkles className="size-4" />Create your own series</Button>
           </div>
         </section>
